@@ -1,1 +1,206 @@
-// awsm lessfile
+/*
+ * C S S   R E S E T -------------------------------------------------------- */
+html{color:#000;background:#FFF;font-family: Arial, Helvetica, sans-serif;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}
+address,caption,cite,code,dfn,em,strong,th,var,optgroup{font-style:inherit;font-weight:inherit;}
+del,ins{text-decoration:none;}li{list-style:none;}caption,th{text-align:left;}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}
+abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:baseline;}
+sub{vertical-align:baseline;}legend{color:#000;}
+input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}
+input,button,textarea,select{font-size:100%;}
+
+
+// blau
+@color1: #000000;
+@color2: #151515;
+@color3: #16273f;
+@color4: #203b60;
+@color5: #2a4f80;
+@color6: #3362a1;
+@color7: #fff;
+
+@color_warning: #bc3f56;
+
+.glow (@color) {
+    text-shadow: 0px 0px 5px @color;
+}
+
+
+ul {padding: 0px;}
+/**
+ * main.less
+ * @copyright Daniel Treptow
+ * @author Daniel Treptow
+ */
+
+/* Element Styling */
+@import url(http://fonts.googleapis.com/css?family=Orbitron|Pirata+One|Quantico|Faster+One);
+/*
+font-family: 'Orbitron', sans-serif;
+font-family: 'Pirata One', cursive;
+font-family: 'Quantico', sans-serif;
+font-family: 'Faster One', cursive;
+ */
+@font1:'Faster One', cursive; // logo
+@font2: 'Quantico', sans-serif; // menu und headings (header, footer)
+
+
+a.link, a:link, a:visited {
+    text-decoration: none;
+    color: @color3;
+    &:hover {
+        color: #888;
+    }
+}
+
+input, textarea, select {
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0px;
+    padding: 10px;
+    font-size: 0.8em;
+
+    border: 1px solid #dadada;
+    color: #888;
+}
+
+/* */
+
+html, body { height:100%; } // 100% height for fullpage view
+body {
+    color: @color5;
+    background-color: @color3;
+    font-size: 100%;
+
+    font-family: @font2;
+
+    #wrapper {
+        min-height:100%;
+    } // set wrapper
+    * html #wrapper { height:100%; } // set wrapper for ie
+
+    header {
+        border-bottom: 1px dotted @color4;
+        .logo {
+            font-family: @font1;
+            font-size: 3em;
+            display: inline-block;
+            margin: 20px;
+        }
+    }
+
+    #content {
+        height: 100%;
+        #current {
+            padding: 20px;
+            .flow {
+                margin-right: 20px;
+                display: inline-block;
+                ul {
+                    li {
+                        display: inline-block;
+                        color: @color4;
+
+                        &.active {
+                            color: @color6;
+                            .glow(@color6);
+                        }
+                    }
+                }
+            }
+            #meassurement {
+                display: inline-block;
+                color: @color4;
+
+                &.active {
+                    color: @color6;
+                    .glow(@color6);
+                }
+            }
+
+            #connection_status {
+                float: right;
+                color: @color_warning;
+                .glow(@color_warning);
+
+                &.connected {
+                    color: @color6;
+                    .glow(@color6);
+                }
+            }
+        }
+
+        #history {
+            height: 400px;
+            // position: absolute;
+            // top: 0px;
+            // left: 0px;
+            // right: 0px;
+            // bottom: 0px;
+            background-color: @color4;
+        }
+
+    }
+
+    footer {
+        //text-align: center;
+        height:80px;
+        margin-top: -80px;
+
+        .download {
+            display: none;
+            width: 400px;
+
+            li {
+                display: inline-block;
+            }
+        }
+
+        #controls {
+            //padding: 0 20px 0 20px;
+            width: 100%;
+            text-align: right;
+
+            .interval {
+                display: inline-block;
+                width: 85px;
+            }
+            .duration {
+                display: inline-block;
+                width: 55px;
+            }
+            .start {
+                display: inline-block;
+                width: 150px;
+                margin-right: 20px;
+            }
+            .stop {
+                display: inline-block;
+                display: none;
+                width: 150px;
+                margin-right: 20px;
+            }
+
+            .status {
+                font-size: 0.8em;
+                display: none;
+                width: 150px;
+                margin-right: 10px;
+            }
+        }
+
+        .copyright {
+            text-align: center;
+            position: absolute;
+            bottom: 10px;
+            left: 0px;
+            right:0px;
+
+            font-size: 0.6em;
+        }
+    }
+}

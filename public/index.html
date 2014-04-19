@@ -2,36 +2,60 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>METEX M-36850CR</title>
+    <title>METEX M-36850CR Client</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, minimum-scale=1, user-scalable=yes" />
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" type="text/css" href="assets/css/main.css">
-    <script type="text/javascript" src="javascript.php"></script>
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="src/js.js"></script>
+    <script src="lib/rickshaw-master/vendor/d3.min.js"></script>
+    <script src="lib/rickshaw-master/vendor/d3.layout.min.js"></script>
+    <script src="lib/rickshaw-master/rickshaw.min.js"></script>
 </head>
 <body>
 <div id="wrapper">
-    <header>METEX M-3650CR Client</header>
+    <header>
+        <div class="logo">METEX M-3650CR</div>
+    </header>
     <div id="content">
-      <div id="current">
-        <div id="flow"></div>
-        <div id="connection_status"></div>
-        <div id="meassurement">
-          <span class="time"></span>
-          <span class="value"></span>
-          <span class="unit"></span>
+        <div id="current">
+            <div class="flow">
+                <ul id="flow">
+                    <li class="ac">AC</li>
+                    <li class="dc">DC</li>
+                </ul>
+            </div>
+            <div id="meassurement">
+                <span class="time"></span>
+                <span class="value"></span>
+                <span class="unit"></span>
+                <span class="duration"></span>
+            </div>
+            <div id="connection_status">[NICHT VERBUNDEN]</div>
         </div>
-      </div>
-      <div id="history"></div>
-      <div id="controls">
-        <div><label for="interval">Intervall in sec</label><input type="text" id="interval"></div>
-        <div><label for="duration">Me&szlig;dauer in sec</label><input type="text" id="duration"></div>
-        <input type="button" value="Starten / Beenden">
-      </div>
+        <div id="history">
+            <div class="table"></div>
+            <div class="graph"></div>
+        </div>
+
     </div>
 </div>
 <footer>
-    <span>&copy; 2014 Jens Fried, Emre Konar, Daniel Treptow</span>
+    <ul class="download">
+        <li>PDF</li>
+        <li><a href="data:application/octet-stream,field1%2Cfield2%0Afoo%2Cbar%0Agoo%2Cgai%0A">CSV</a></li>
+        <li>JSON</li>
+        <li>DROPBOX</li>
+    </ul>
+    <div id="controls">
+        <span class="status"></span>
+        <div class="interval"><input type="number" id="intervall" value="500"></div>
+        <div class="duration"><input type="number" id="duration" value="0"></div>
+        <input class="start" type="button" value="Starten">
+        <input class="stop" type="button" value="Stop">
+    </div>
+    <div class="copyright">&copy; 2014 Jens Fried, Emre Konar, Daniel Treptow</div>
 </footer>
 </body></html>
