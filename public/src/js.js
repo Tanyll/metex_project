@@ -20,7 +20,7 @@ function download(filename, text) {
 
 
 $(document).ready(function() {
-    var metex_list = [{x:0,y:0}];
+    var metex_list = [];
     var metex = {
         connected: true,
         intervallId: null, // here
@@ -30,7 +30,8 @@ $(document).ready(function() {
             element: document.querySelector(".graph"),
             width: 800,
             height: 300,
-            renderer: 'line',
+            renderer: 'scatterplot',
+            //stroke: true,
             series: [{
                 color: 'steelblue',
                 data: metex_list
@@ -166,10 +167,11 @@ $(document).ready(function() {
                     data.time = current_timestamp;
                     data.value = '120';
                     data.unit = 'kw';
-                    data.x = current_timestamp/1000;
-                    data.y = 1.2*current_timestamp/10000;
+                    data.x = current_timestamp/100000000000;
+                    data.y = 2.5*(current_timestamp/100000000000);
 
                 metex_list.push(data);
+                console.log(data.x);
 
                 metex.renderView(data);
             },intervall.val());
