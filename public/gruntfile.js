@@ -97,12 +97,10 @@ module.exports = function(grunt) {
 
    grunt.loadNpmTasks('grunt-contrib-watch');
    grunt.loadNpmTasks('grunt-contrib-concat');
-   grunt.loadNpmTasks('grunt-node-webkit-builder');
    grunt.loadNpmTasks('grunt-contrib-less');
    grunt.loadNpmTasks('grunt-contrib-copy');
+   grunt.loadNpmTasks('grunt-node-webkit-builder');
 
-   // grunt.registerTask('test', 'tanyll testet', function() {console.log('dsadas');
-   // });
    grunt.registerTask('buildWebsite', ['less:web', 'concat:javascript', 'copy']);
    grunt.registerTask('buildApp', ['less:nwApp', 'concat:javascript', 'nodewebkit']);
    grunt.registerTask('buildAll', ['buildWebsite', 'buildApp']);
