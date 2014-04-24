@@ -1,0 +1,30 @@
+{
+  "name": "METEX_CLIENT",
+  "description": "Projektarbeit von Emre Konar, Jens Fried, Daniel Treptow",
+  "main": "index.html",
+  "author": {
+    "name": "Emre Konar, Jens Fried, Daniel Treptow",
+    "email": "ausbildung@carcopy.com"
+  },
+  "version": "0.0.1",
+  "dependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-watch": ">=0.5.3",
+    "grunt-contrib-concat": ">=0.3.0",
+    "grunt-node-webkit-builder": ">=0.1.18"
+  },
+  "window": {
+    "title": "METEX M-36850CR Client",
+    "toolbar": false,
+    "frame": false,
+    "width": 860,
+    "height": 621,
+    "position": "center",
+    "min_width": 844,
+    "min_height": 621,
+    "resizable": true
+  },
+  "webkit": {
+    "plugin": true
+  }
+}
