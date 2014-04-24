@@ -1,5 +1,5 @@
 String.prototype.toHHMMSS = function () {
-    var sec_num = parseInt(this, 10); // don't forget the second param
+    var sec_num = parseInt(this, 10);
     var hours   = Math.floor(sec_num / 3600);
     var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
     var seconds = sec_num - (hours * 3600) - (minutes * 60);
@@ -22,10 +22,11 @@ function download(filename, text) {
 $(document).ready(function() {
     var metex_list = [];
     var metex = {
-        connected: true,
-        intervallId: null, // here
+        intervallId: null,
         stopTime: null,
         startTime: null,
+        connected: false,
+        connectionStartTime: null,
         graph: new Rickshaw.Graph( {
             element: document.querySelector(".graph"),
             width: 800,
@@ -42,14 +43,6 @@ $(document).ready(function() {
         init: function() {
             var that = this;
 
-            // this.xAxis = new Rickshaw.Graph.Axis.Time({
-            //     graph: this.graph
-            // });
-
-            // this.yAxis = new Rickshaw.Graph.Axis.Y({
-            //     graph: this.graph
-            // });
-
             $('.start').on('click', function(){
                 that.startLogging();
             });
@@ -58,9 +51,28 @@ $(document).ready(function() {
                 that.stopLogging();
             });
 
-            $('#meassurement .time').html('88:88:88'); // clear meassurement
+            $('#connection_status').on('click', function(){
+                that.getConnectionStatus();
+            });
+
+            $('ul.download .pdf').on('click', function(){
+                that.downloadAsPDF();
+            });
+
+            $('ul.download .csv').on('click', function(){
+                that.downloadAsCSV();
+            });
+
+            $('ul.download .json').on('click', function(){
+                that.downloadAsJSON();
+            });
+
+            // set display to start values
+            $('#meassurement .time').html('88:88:88');
             $('#meassurement .value').html('8888');
             $('#meassurement .unit').html('88');
+
+            that.connect();
         },
 
         getData: function (){
@@ -112,6 +124,32 @@ $(document).ready(function() {
             this.graph.render();
             // this.yAxis.render();
             // this.xAxis.render();
+            return true;
+        },
+
+        getConnectionStatus: function(){
+            if (this.connected !== true) {
+                return this.connect();
+            }
+
+            var current_timestamp = new Date().getTime();
+            var connection_uptime = this.connectionStartTime - current_timestamp;
+            alert('Verbindung besteht seit '+connection_uptime);
+        },
+
+        connect: function(){
+            return false;
+
+            var that = this;
+
+            if (verbindungsaufbau === false) {
+                window.setTimeout(function(){that.connect();},1000);
+            }
+
+            that.connected = true;
+
+            var current_timestamp = new Date().getTime();
+            that.connectionStartTime = current_timestamp;
         },
 
         startLogging: function() {
@@ -175,6 +213,8 @@ $(document).ready(function() {
 
                 metex.renderView(data);
             },intervall.val());
+
+            return true;
         },
 
         stopLogging: function() {
@@ -183,31 +223,78 @@ $(document).ready(function() {
             var intervall = $('#intervall');
             var duration = $('#duration');
 
-            this.stopTime = null; // reset stop timer
-            this.startTime = null;
-
             intervall.removeAttr('disabled');
             duration.removeAttr('disabled');
 
+            this.stopTime = null; // reset stop timer
+            this.startTime = null;
+
             $('.start').show();
             $('.stop').hide();
-            $('#meassurement').removeClass('active');
             $('.status').html('Messung beendet');
-            window.setTimeout(function(){$('.status').fadeOut();},500)
+            $('#meassurement').removeClass('active');
+            $('#flow li').removeClass('active');
+            window.setTimeout(function(){$('.status').fadeOut();},500);
 
             window.clearInterval(metex.intervallId);
+            return true;
         },
 
         downloadAsCSV: function() {
+            return false;
 
+            // url
+            // data:application/octet-stream,field1%2Cfield2%0Afoo%2Cbar%0Agoo%2Cgai%0A
         },
 
         downloadAsJSON: function() {
+            return false;
 
+            // url
+            // data:application/octet-stream,field1%2Cfield2%0Afoo%2Cbar%0Agoo%2Cgai%0A
         },
 
         downloadAsPDF: function() {
+            var doc = new jsPDF();
+                doc.setProperties({
+                    // '+this.model.get('title')+'
+                    title: 'Messungen  ',
+                    subject: 'Messungsübersicht',
+                    author: 'Emre Konar, Jens Fried, Daniel Treptow',
+                    keywords: '',
+                    creator: 'Messungen Mess Client von Emre Konar, Jens Fried und Daniel Treptow'
+                });
 
+                // heading
+                doc.setFont("helvetica");
+                doc.setFontType("bold");
+                doc.setFontSize(22);
+
+                doc.text(10, 20, 'Messungen');
+
+                // transactions list heading
+                doc.setFont("courier");
+                doc.setFontSize(8);
+                doc.setFontType("bold");
+
+                doc.text(10, 30, 'time');
+                doc.text(40, 30, 'wert');
+                doc.text(115, 30, 'enheit');
+
+                // transactions list
+                doc.setFontType("normal");
+                var pos_y = 35;
+                this.collection.each(function(events) {
+                    doc.text(10, pos_y, metex_list.time);
+                    doc.text(40, pos_y, metex_list.value);
+                    doc.text(115, pos_y, metex_list.unit);
+                    pos_y += 3;
+                });
+
+                // finally output or save or something
+                doc.output('datauri');
+
+            return true;
         }
     }
 
