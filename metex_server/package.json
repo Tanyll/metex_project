@@ -1,0 +1,9 @@
+{
+	"name": "metex_server",
+	"version": "0.0.1",
+	"private": true,
+	"dependencies": {
+		"socket.io": ">=0.9.x",
+		"serialport": ">=1.4.0"
+	}
+}
