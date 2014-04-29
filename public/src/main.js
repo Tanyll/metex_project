@@ -3185,6 +3185,13 @@ String.prototype.toHHMMSS = function () {
     return time;
 }
 
+function fueherendeNullen(zahl) {
+    var zahl = String(zahl);
+    console.log(zahl.lenght);
+    if (zahl.length<2) { zahl = "0" + zahl };
+    return zahl;
+}
+
 function download(filename, text) {
     var pom = document.createElement('a');
     pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -3205,8 +3212,11 @@ $(document).ready(function() {
         connectionStartTime: null,
         graph: null,
         graphOptions: null,
+
         init: function() {
             var that = this;
+
+            //this.graph = $.plot(".graph", [ plot_list ], this.graphOptions);
 
             $('.start').on('click', function(){
                 that.startLogging();
@@ -3220,15 +3230,15 @@ $(document).ready(function() {
                 that.getConnectionStatus();
             });
 
-            $('ul.download .pdf').on('click', function(){
+            $('.download ul .pdf').on('click', function(){
                 that.downloadAsPDF();
             });
 
-            $('ul.download .csv').on('click', function(){
+            $('.download ul .csv').on('click', function(){
                 that.downloadAsCSV();
             });
 
-            $('ul.download .json').on('click', function(){
+            $('.download ul .json').on('click', function(){
                 that.downloadAsJSON();
             });
 
@@ -3237,13 +3247,20 @@ $(document).ready(function() {
             $('#meassurement .value').html('8888');
             $('#meassurement .unit').html('88');
 
-            // this.graph = $.plot(".graph", [ plot_list ], this.graphOptions);
-
-            that.connect();
+            console.log('server wird initialisiert ...');
+            window.setTimeout(function(){that.connect();},2000);
         },
 
         getData: function (){
+            var current_timestamp = new Date().getTime();
+            var data = {};
+                data.flow = 'ac';
+                data.time = current_timestamp;
+                // data.value = Math.sin(that.intervallCount);
+                data.value = Math.round(Math.sin(this.intervallCount) * 100) / 100;
+                data.unit = 'kw';
 
+            return data;
         },
 
         renderView: function(data){
@@ -3251,15 +3268,12 @@ $(document).ready(function() {
 
             $('#flow li').removeClass('active'); // clear flow
 
-            $('#connection_status').removeClass('connected'); // connection status false / clear
-            $('#connection_status').html('[NICHT VERBUNDEN]');
-
             // Daten holen
 
             // connection status true
             if (this.connected == true) {
-                $('#connection_status').addClass('connected');
-                $('#connection_status').html('[VERBUNDEN]');
+                // $('#connection_status').addClass('connected');
+                // $('#connection_status').html('[VERBUNDEN]');
 
                 if (data.flow == 'dc') {
                     $('#flow .dc').addClass('active');
@@ -3271,13 +3285,11 @@ $(document).ready(function() {
 
                 // messdaten
                 var date = new Date(data.time);
-                $('#meassurement .time').html(date.getDay()+'.'+date.getMonth()+'.'+date.getFullYear()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds());
+                $('#meassurement .time').html(fueherendeNullen(date.getDay())+'.'+fueherendeNullen(date.getMonth())+'.'+date.getFullYear()+' '+fueherendeNullen(date.getHours())+':'+fueherendeNullen(date.getMinutes())+':'+fueherendeNullen(date.getSeconds()));
                 $('#meassurement .value').html(data.value);
                 $('#meassurement .unit').html(data.unit);
                 $('#meassurement .duration').html(String((current_timestamp - this.startTime+1000)/1000).toHHMMSS());
             }
-
-
 
             // tell status
             if (this.stopTime != null) {
@@ -3285,9 +3297,6 @@ $(document).ready(function() {
             } else {
                 $('.status').html('Messung läuft');
             }
-
-            // add data to graph
-
 
             return true;
         },
@@ -3303,18 +3312,23 @@ $(document).ready(function() {
         },
 
         connect: function(){
-            return false;
+            //return false;
 
             var that = this;
 
-            if (verbindungsaufbau === false) {
-                window.setTimeout(function(){that.connect();},1000);
-            }
+            // if (verbindungsaufbau === false) {
+            //     window.setTimeout(function(){that.connect();},1000);
+            // }
 
             that.connected = true;
 
             var current_timestamp = new Date().getTime();
             that.connectionStartTime = current_timestamp;
+
+            $('#connection_status').addClass('connected');
+            $('#connection_status').html('[VERBUNDEN]');
+
+            console.log('VERBUNDEN!');
         },
 
         startLogging: function() {
@@ -3366,11 +3380,7 @@ $(document).ready(function() {
                     return false;
                 }
 
-                var data = {};
-                    data.flow = 'ac';
-                    data.time = current_timestamp;
-                    data.value = Math.sin(that.intervallCount);
-                    data.unit = 'kw';
+                var data = that.getData();
 
                 metex_list.push(data);
                 plot_list.push([intervall.val()*that.intervallCount, data.value]);
@@ -3445,7 +3455,7 @@ $(document).ready(function() {
                 doc.setFontSize(22);
 
                 doc.text(10, 20, 'Messungen');
-
+0
                 // transactions list heading
                 doc.setFont("courier");
                 doc.setFontSize(8);

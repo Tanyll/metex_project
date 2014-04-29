@@ -114,12 +114,24 @@ body {
                 }
             }
             #meassurement {
+                position: absolute;
                 display: inline-block;
+                width: 400px;
                 color: @color4;
 
                 &.active {
                     color: @color6;
                     .glow(@color6);
+                }
+
+                .duration {
+                    padding-right: 20px;
+                    font-size: 0.8em;
+                }
+
+                .time {
+                    padding-right: 10px;
+                    font-size: 0.8em;
                 }
             }
 
@@ -162,6 +174,7 @@ body {
         //text-align: center;
         height:80px;
         margin-top: -80px;
+        background-color: @color3;
 
         .download {
             position: absolute;
