@@ -13,7 +13,6 @@ String.prototype.toHHMMSS = function () {
 
 function fueherendeNullen(zahl) {
     var zahl = String(zahl);
-    console.log(zahl.lenght);
     if (zahl.length<2) { zahl = "0" + zahl };
     return zahl;
 }
@@ -25,19 +24,20 @@ function download(filename, text) {
     pom.click();
 }
 
-
 $(document).ready(function() {
     var metex_list = [];
     var plot_list = [];
     var metex = {
         intervallId: null,
         intervallCount: 0,
+        meassureCount: 0,
         stopTime: null,
         startTime: null,
         connected: false,
         connectionStartTime: null,
         graph: null,
         graphOptions: null,
+        current_list: [],
 
         init: function() {
             var that = this;
@@ -164,6 +164,8 @@ $(document).ready(function() {
             var intervall = $('#intervall');
             var duration = $('#duration');
 
+                that.meassureCount++;
+
             if (Number(intervall.val()) < 0) {
                 console.log('Ungültige Eingabe für Intervall');
                 return false;
@@ -208,7 +210,7 @@ $(document).ready(function() {
 
                 var data = that.getData();
 
-                metex_list.push(data);
+                that.current_list.push(data);
                 plot_list.push([intervall.val()*that.intervallCount, data.value]);
 
                 that.graph = $.plot(".graph", [ plot_list ], this.graphOptions);
@@ -229,12 +231,28 @@ $(document).ready(function() {
             var intervall = $('#intervall');
             var duration = $('#duration');
 
+            // backup list :)
+            metex_list.push({
+                id: this.meassureCount,
+                intervallId: this.intervallId,
+                intervallCount: this.intervallCount,
+                stopTime: new Date().getTime(),
+                startTime: this.startTime,
+                connectionStartTime: this.connectionStartTime,
+                intervall: intervall,
+                duration: duration,
+                list: this.current_list
+            });
+
+
+
             intervall.removeAttr('disabled');
             duration.removeAttr('disabled');
 
             this.stopTime = null; // reset stop timer
             this.startTime = null;
             this.intervallCount = 0;
+            this.current_list = [];
             plot_list = [];
 
             $('.start').show();
@@ -280,26 +298,55 @@ $(document).ready(function() {
                 doc.setFontType("bold");
                 doc.setFontSize(22);
 
-                doc.text(10, 20, 'Messungen');
-0
-                // transactions list heading
-                doc.setFont("courier");
-                doc.setFontSize(8);
-                doc.setFontType("bold");
-
-                doc.text(10, 30, 'time');
-                doc.text(40, 30, 'wert');
-                doc.text(115, 30, 'enheit');
+                doc.text(20, 20, 'Messungen');
 
                 // transactions list
                 doc.setFontType("normal");
                 var pos_y = 35;
-                this.collection.each(function(events) {
-                    doc.text(10, pos_y, metex_list.time);
-                    doc.text(40, pos_y, metex_list.value);
-                    doc.text(115, pos_y, metex_list.unit);
+
+                metex_list.forEach(function(meassure) {
+                    doc.setFont("helvetica");
+                    doc.setFontSize(10);
+                    doc.setFontType("normal");
+                    doc.text(20, pos_y, 'Messung Nr.: '+String(meassure.id));
+                    pos_y += 5;
+
+                    doc.setFont("helvetica");
+                    doc.setFontSize(8);
+                    doc.setFontType("normal");
+                    doc.text(20, pos_y, 'Messungen: '+String(meassure.intervallCount+' (Intervall: '+(meassure.intervall.val()/100)+'/s)'));
                     pos_y += 3;
-                });
+                    var date = new Date(meassure.startTime);
+                    doc.text(20, pos_y, 'Startzeit: '+fueherendeNullen(date.getDay())+'.'+fueherendeNullen(date.getMonth())+'.'+date.getFullYear()+' '+fueherendeNullen(date.getHours())+':'+fueherendeNullen(date.getMinutes())+':'+fueherendeNullen(date.getSeconds()));
+                    pos_y += 3;
+                    doc.text(20, pos_y, 'Messdauer: '+String((meassure.stopTime-meassure.startTime)/1000)+'s');
+                    pos_y += 5;
+
+                    // transactions list heading
+                    doc.setFont("courier");
+                    doc.setFontSize(8);
+                    doc.setFontType("bold");
+
+                    doc.text(20, pos_y, 'Zeit');
+                    doc.text(60, pos_y, 'Messung');
+                    //doc.text(115, 30, 'Einheit');
+                    pos_y += 4;
+
+                    meassure.list.forEach(function(entry) {
+                        doc.setFont("courier");
+                        doc.setFontSize(8);
+                        doc.setFontType("normal");
+
+                        var date = new Date(entry.time);
+                        doc.text(20, pos_y, String(fueherendeNullen(date.getDay())+'.'+fueherendeNullen(date.getMonth())+'.'+date.getFullYear()+' '+fueherendeNullen(date.getHours())+':'+fueherendeNullen(date.getMinutes())+':'+fueherendeNullen(date.getSeconds())));
+                        doc.text(60, pos_y, String(entry.flow));
+                        doc.text(65, pos_y, String(entry.value+' '+entry.unit));
+                        //doc.text(115, pos_y, String(entry.unit));
+                        pos_y += 3;
+                    });
+
+                    pos_y += 10;
+                })
 
                 // finally output or save or something
                 doc.output('datauri');

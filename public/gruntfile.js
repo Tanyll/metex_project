@@ -36,6 +36,7 @@ module.exports = function(grunt) {
                src: [
                    'lib/jquery.min.js',
                    'lib/flot/jquery.flot.js',
+                   'lib/jsPDF/jspdf.js',
                    'src/js.js'
                ],
 
