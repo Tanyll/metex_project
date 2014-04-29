@@ -2,7 +2,12 @@ var ModulSerialPort = require('serialport');
 
 var SerialPort = ModulSerialPort.SerialPort;
 var sp = new SerialPort("COM3", {
-  parser: ModulSerialPort.parsers.raw
+    parser: ModulSerialPort.parsers.raw,
+    //parser: ModulSerialPort.parsers.readline('\r\n'),
+    parity:  'none',
+    baudRate: 1200,
+    stopBits: 2,
+    dataBits: 7
 }, false); // this is the openImmediately flag [default is true]
 
 sp.open(function () {

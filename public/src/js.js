@@ -21,25 +21,16 @@ function download(filename, text) {
 
 $(document).ready(function() {
     var metex_list = [];
+    var plot_list = [];
     var metex = {
         intervallId: null,
+        intervallCount: 0,
         stopTime: null,
         startTime: null,
         connected: false,
         connectionStartTime: null,
-        graph: new Rickshaw.Graph( {
-            element: document.querySelector(".graph"),
-            width: 800,
-            height: 300,
-            renderer: 'scatterplot',
-            //stroke: true,
-            series: [{
-                color: 'steelblue',
-                data: metex_list
-            }]
-        }),
-        xAxis: null,
-        yAxis: null,
+        graph: null,
+        graphOptions: null,
         init: function() {
             var that = this;
 
@@ -72,6 +63,8 @@ $(document).ready(function() {
             $('#meassurement .value').html('8888');
             $('#meassurement .unit').html('88');
 
+            // this.graph = $.plot(".graph", [ plot_list ], this.graphOptions);
+
             that.connect();
         },
 
@@ -80,7 +73,6 @@ $(document).ready(function() {
         },
 
         renderView: function(data){
-            console.log('renderView');
             var current_timestamp = new Date().getTime();
 
             $('#flow li').removeClass('active'); // clear flow
@@ -121,9 +113,8 @@ $(document).ready(function() {
             }
 
             // add data to graph
-            this.graph.render();
-            // this.yAxis.render();
-            // this.xAxis.render();
+
+
             return true;
         },
 
@@ -155,6 +146,7 @@ $(document).ready(function() {
         startLogging: function() {
             console.log('starte logging');
 
+            var that = this;
             var intervall = $('#intervall');
             var duration = $('#duration');
 
@@ -190,9 +182,9 @@ $(document).ready(function() {
             this.startTime = current_timestamp;
 
             // start
-            //metex.renderView(data);
             metex.intervallId = window.setInterval(function(){
                 var current_timestamp = new Date().getTime();
+                that.intervallCount++;
 
                 if (metex.stopTime != null &&
                     metex.stopTime <= current_timestamp) {
@@ -203,15 +195,19 @@ $(document).ready(function() {
                 var data = {};
                     data.flow = 'ac';
                     data.time = current_timestamp;
-                    data.value = '120';
+                    data.value = Math.sin(that.intervallCount);
                     data.unit = 'kw';
-                    data.x = current_timestamp/100000000000;
-                    data.y = 2.5*(current_timestamp/100000000000);
 
                 metex_list.push(data);
-                console.log(data.x);
+                plot_list.push([intervall.val()*that.intervallCount, data.value]);
+
+                that.graph = $.plot(".graph", [ plot_list ], this.graphOptions);
+                that.graph.setData([plot_list]);
+                that.graph.draw();
 
                 metex.renderView(data);
+
+                console.log(that.intervallCount+'  '+data.time+'   '+data.flow+': '+data.value+' '+data.unit);
             },intervall.val());
 
             return true;
@@ -228,6 +224,8 @@ $(document).ready(function() {
 
             this.stopTime = null; // reset stop timer
             this.startTime = null;
+            this.intervallCount = 0;
+            plot_list = [];
 
             $('.start').show();
             $('.stop').hide();
@@ -237,6 +235,8 @@ $(document).ready(function() {
             window.setTimeout(function(){$('.status').fadeOut();},500);
 
             window.clearInterval(metex.intervallId);
+
+            //plot_list.push(null);
             return true;
         },
 

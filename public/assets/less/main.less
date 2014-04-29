@@ -49,9 +49,10 @@ font-family: 'Faster One', cursive;
 
 a.link, a:link, a:visited {
     text-decoration: none;
-    color: @color3;
+    color: @color4;
     &:hover {
-        color: #888;
+        color: @color6;
+        .glow(@color6);
     }
 }
 
@@ -135,13 +136,24 @@ body {
         }
 
         #history {
-            height: 400px;
+            height: 360px;
+            //display: block;
             // position: absolute;
             // top: 0px;
             // left: 0px;
             // right: 0px;
             // bottom: 0px;
-            background-color: @color4;
+
+
+            .graph {
+                background-color: @color4;
+                height: 350px;
+                // position: absolute;
+                // top: 0px;
+                // left: 0px;
+                // right: 0px;
+                // bottom: 0px;
+            }
         }
 
     }
@@ -152,18 +164,31 @@ body {
         margin-top: -80px;
 
         .download {
-            display: none;
-            width: 400px;
-
-            li {
+            position: absolute;
+            left: 20px;
+            bottom: 30px;
+            width: 600px;
+            div {
                 display: inline-block;
+            }
+            ul {
+                margin-left: 10px;
+                display: inline;
+
+                li {
+                    display: inline-block;
+                }
             }
         }
 
         #controls {
+            position: absolute;
+            right: 0px;
+            bottom: 20px;
             //padding: 0 20px 0 20px;
             width: 100%;
             text-align: right;
+            width: 550px;
 
             .interval {
                 display: inline-block;

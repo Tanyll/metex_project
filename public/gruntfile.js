@@ -35,9 +35,7 @@ module.exports = function(grunt) {
            javascript: {
                src: [
                    'lib/jquery.min.js',
-                   'lib/rickshaw-master/vendor/d3.min.js',
-                   'lib/rickshaw-master/vendor/d3.layout.js',
-                   'lib/rickshaw-master/rickshaw.min.js',
+                   'lib/flot/jquery.flot.js',
                    'src/js.js'
                ],
 
@@ -104,5 +102,4 @@ module.exports = function(grunt) {
    grunt.registerTask('buildWebsite', ['less:web', 'concat:javascript', 'copy']);
    grunt.registerTask('buildApp', ['less:nwApp', 'concat:javascript', 'nodewebkit']);
    grunt.registerTask('buildAll', ['buildWebsite', 'buildApp']);
-
 };
